@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="tool.css">
+  <link rel="icon" href="img/favicon.png" type="image/png">
+  <title>営業利益率計算ツール</title>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="card">
+
+    <h1>営業利益率計算</h1>
+
+    <div class="description">
+      金額を入力してください
+    </div>
+
+
+    <!-- 営業収益 -->
+    <div class="input-group">
+
+      <label for="revenue">
+        営業収益
+      </label>
+
+      <input
+        type="text"
+        id="revenue"
+        placeholder="例：1兆2590億円"
+      >
+
+    </div>
+
+
+    <!-- 営業利益 -->
+    <div class="input-group">
+
+      <label for="profit">
+        営業利益
+      </label>
+
+      <input
+        type="text"
+        id="profit"
+        placeholder="例：5000億円"
+      >
+
+    </div>
+
+
+    <button onclick="calculate()">
+      営業利益率を計算
+    </button>
+
+
+    <div id="error" class="error"></div>
+
+
+    <!-- 結果表示 -->
+    <div class="result">
+
+      <div class="result-title">
+        営業利益率
+      </div>
+
+      <div id="result" class="result-number">
+        -- %
+      </div>
+
+
+      <!-- 評価 -->
+      <div
+        id="evaluation"
+        class="evaluation"
+        style="display: none;"
+      >
+
+        <div id="evaluationTitle"></div>
+
+        <div
+          id="evaluationDescription"
+          class="evaluation-description"
+        ></div>
+
+      </div>
+
+
+      <!-- 円換算 -->
+      <div
+        id="converted"
+        class="converted"
+      ></div>
+
+    </div>
+
+
+    <!-- 評価基準 -->
+    <div class="criteria">
+
+      <h2>営業利益率の評価基準</h2>
+
+      <div class="criteria-item danger">
+        🔴 0%以下：危険（赤字状態）
+      </div>
+
+      <div class="criteria-item standard">
+        🟡 0〜5%：標準（一般的な平均水準）
+      </div>
+
+      <div class="criteria-item good">
+        🟢 5〜10%：優良（収益性が高い状態）
+      </div>
+
+      <div class="criteria-item excellent">
+        🔵 10〜15%：超優良（非常に高い収益力）
+      </div>
+
+      <div class="criteria-item caution">
+        🟠 15%以上：高水準（高水準だが、投資不足や無理なコストカットの可能性もある）
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+/*
+  日本語の金額を円に変換するシステム
+  例１億2345万円＝123450000JPY
+*/
+
+function parseJapaneseMoney(text) {
+
+  text = text
+    .replace(/,/g, "")
+    .replace(/\s/g, "")
+    .trim();
+
+  if (text === "") {
+    return null;
+  }
+
+  // 円を削除
+  text = text.replace(/円$/, "");
+
+  let total = 0;
+
+  // 兆
+  const trillion = text.match(/([\d.]+)兆/);
+
+  if (trillion) {
+    total += Number(trillion[1]) * 1000000000000;
+  }
+
+  // 億
+  const oku = text.match(/([\d.]+)億/);
+
+  if (oku) {
+    total += Number(oku[1]) * 100000000;
+  }
+
+  // 万
+  const man = text.match(/([\d.]+)万/);
+
+  if (man) {
+    total += Number(man[1]) * 10000;
+  }
+
+  // 単位がない場合
+  if (!trillion && !oku && !man) {
+
+    const number = Number(text);
+
+    if (isNaN(number)) {
+      return null;
+    }
+
+    return number;
+  }
+
+  return total;
+}
+
+
+/*
+  営業利益率を計算
+*/
+
+function calculate() {
+
+  const revenueText =
+    document.getElementById("revenue").value;
+
+  const profitText =
+    document.getElementById("profit").value;
+
+
+  const revenue =
+    parseJapaneseMoney(revenueText);
+
+  const profit =
+    parseJapaneseMoney(profitText);
+
+
+  const error =
+    document.getElementById("error");
+
+  const result =
+    document.getElementById("result");
+
+  const converted =
+    document.getElementById("converted");
+
+  const evaluation =
+    document.getElementById("evaluation");
+
+  const evaluationTitle =
+    document.getElementById("evaluationTitle");
+
+  const evaluationDescription =
+    document.getElementById("evaluationDescription");
+
+
+  error.textContent = "";
+  converted.textContent = "";
+
+
+  if (revenue === null || profit === null) {
+
+    result.textContent = "-- %";
+
+    evaluation.style.display = "none";
+
+    error.textContent =
+      "金額を正しく入力してください。";
+
+    return;
+  }
+
+
+  if (revenue <= 0) {
+
+    result.textContent = "-- %";
+
+    evaluation.style.display = "none";
+
+    error.textContent =
+      "営業収益は0より大きい値を入力してください。";
+
+    return;
+  }
+
+
+  // 営業利益率
+  const margin =
+    (profit / revenue) * 100;
+
+
+  // 結果表示
+  result.textContent =
+    margin.toFixed(2) + " %";
+
+
+  /*
+    評価を判定
+  */
+
+  evaluation.style.display = "block";
+
+  // 一旦クラスをリセット
+  evaluation.className = "evaluation";
+
+
+  if (margin <= 0) {
+
+    evaluation.classList.add("danger");
+
+    evaluationTitle.textContent =
+      "🔴 危険：赤字状態";
+
+    evaluationDescription.textContent =
+      "営業利益が0以下です。営業活動によって利益を生み出せていない状態です。";
+
+  }
+
+  else if (margin <= 5) {
+
+    evaluation.classList.add("standard");
+
+    evaluationTitle.textContent =
+      "🟡 標準：一般的な平均水準";
+
+    evaluationDescription.textContent =
+      "営業利益率は標準的な水準です。";
+
+  }
+
+  else if (margin <= 10) {
+
+    evaluation.classList.add("good");
+
+    evaluationTitle.textContent =
+      "🟢 優良：収益性が高い状態";
+
+    evaluationDescription.textContent =
+      "営業利益率が比較的高く、効率よく利益を生み出している状態です。";
+
+  }
+
+  else if (margin <= 15) {
+
+    evaluation.classList.add("excellent");
+
+    evaluationTitle.textContent =
+      "🔵 超優良：非常に高い収益力";
+
+    evaluationDescription.textContent =
+      "非常に高い営業利益率です。高い収益力を持っていると考えられます。";
+
+  }
+
+  else {
+
+    evaluation.classList.add("caution");
+
+    evaluationTitle.textContent =
+      "🟠 要注意：非常に高い水準";
+
+    evaluationDescription.textContent =
+      "営業利益率は非常に高い水準です。一方で、投資不足や無理なコストカットによって利益率が高くなっていないか確認が必要です。";
+
+  }
+
+
+  // 円換算した金額
+  converted.innerHTML =
+    "営業収益： " +
+    revenue.toLocaleString() +
+    " 円<br>" +
+    "営業利益： " +
+    profit.toLocaleString() +
+    " 円<br>" + 
+    "<span  color: #666;'>※本評価は一般的な目安であり、業種やビジネスモデルによって適正値は異なります。<br>実際の経営判断は専門家にご相談ください。</span>";
+
+}
+
+</script>
+
+</body>
+</html>

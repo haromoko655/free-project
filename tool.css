@@ -1,0 +1,192 @@
+* {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Noto Sans JP",
+        sans-serif;
+      background: #f5f7fa;
+      color: #222;
+    }
+
+    .container {
+      max-width: 650px;
+      margin: auto;
+    }
+
+    .card {
+      background: white;
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+
+    .description {
+      text-align: center;
+      color: #666;
+      margin-bottom: 30px;
+    }
+
+    .input-group {
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 20px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 8px;
+      background: #2563eb;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .result {
+      margin-top: 30px;
+      padding: 25px;
+      background: #eff6ff;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .result-title {
+      color: #64748b;
+    }
+
+    .result-number {
+      font-size: 46px;
+      font-weight: bold;
+      color: #2563eb;
+      margin: 8px 0;
+    }
+
+    /* 評価 */
+    .evaluation {
+      margin-top: 20px;
+      padding: 18px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .evaluation-description {
+      margin-top: 8px;
+      font-size: 14px;
+      font-weight: normal;
+      line-height: 1.6;
+    }
+
+    /* 評価ごとの色 */
+
+    .danger {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .standard {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .good {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .excellent {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .caution {
+      background: #ffedd5;
+      color: #c2410c;
+    }
+
+    .converted {
+      font-size: 13px;
+      color: #64748b;
+      margin-top: 15px;
+      line-height: 1.8;
+    }
+
+    .error {
+      color: #dc2626;
+      text-align: center;
+      margin-top: 12px;
+    }
+
+    /* 評価基準 */
+    .criteria {
+      margin-top: 30px;
+      border-top: 1px solid #e5e7eb;
+      padding-top: 25px;
+    }
+
+    .criteria h2 {
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+
+    .criteria-item {
+      padding: 10px 12px;
+      margin-bottom: 7px;
+      border-radius: 7px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 480px) {
+
+      body {
+        padding: 20px 12px;
+      }
+
+      .card {
+        padding: 22px;
+      }
+
+      h1 {
+        font-size: 23px;
+      }
+
+      .result-number {
+        font-size: 40px;
+      }
+    }

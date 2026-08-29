@@ -1,0 +1,131 @@
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: #f5f5f5;
+}
+
+/* ==========================================
+   1. タブレット（iPad等）向けスタイル (1024px以下)
+   ========================================== */
+@media (max-width: 1024px) {
+  .container {
+    padding: 24px 32px;
+  }
+
+  h1 {
+    font-size: 2.1rem; 
+  }
+
+  .toc {
+    padding: 16px;
+  }
+}
+
+/* ==========================================
+   2. スマホ向けスタイル (767px以下)
+   ========================================== */
+@media (max-width: 767px) {
+  .container {
+    padding: 16px; 
+  }
+
+  h1 {
+    font-size: 0.8rem; 
+    text-align: center; 
+  }
+
+  h2 {
+    font-size: 0.7rem;
+  }
+
+   p {
+    font-size: 12px;
+  }
+  body {
+    font-size: 15px; 
+  }
+
+  .table-wrapper {
+    overflow-x: auto; 
+  }
+}
+/* ここまで */
+.text-box {
+    white-space: pre-wrap;
+    width: 70%;
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 30px;
+    background-color: white;
+    line-height: 1.8;
+}
+
+h1 {
+    font-size: 32px !important; 
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    color: #333333;
+}
+
+strong {
+    background: linear-gradient(transparent 60%, #fff33f 60%);
+}
+
+.toc-box {
+    background-color: #fcfcfc;
+    border: 1px solid #e0e0e0;
+    border-left: 5px solid #bfff00;
+    padding: 15px 20px; 
+    margin: 20px 0;
+    border-radius: 4px;
+    max-width: 500px; 
+}
+
+.toc-title {
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 8px; 
+    color: #333;
+    font-size: 16px !important; 
+}
+
+.toc-box ul {
+    margin: 0 !important;   
+    padding-left: 20px !important;
+}
+
+.toc-box li {
+    margin: 0 0 6px 0 !important; 
+    padding: 0 !important;        
+    line-height: 1.4 !important;  
+    color: #555;
+    font-size: 14px !important; 
+}
+
+.toc-box li:last-child {
+    margin-bottom: 0 !important;
+}
+
+.toc-box a {
+    color: inherit !important;            
+    text-decoration: none !important;
+    display: inline-block;
+    width: 100%;               
+}
+
+.toc-box a:hover {
+    opacity: 0.7;
+}
+
+.article-img {
+  max-width: 100%;
+  height: auto;
+}
+
+.toyota-img {
+  max-width: 60%;
+  height: auto;
+}   
