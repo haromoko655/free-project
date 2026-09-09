@@ -94,7 +94,13 @@
       <div
         id="converted"
         class="converted"
-      ></div>
+      >
+        <div id="convertedRevenue"></div>
+        <div id="convertedProfit"></div>
+        <div id="convertedNote" style="color: #666; margin-top: 8px; display: none;">
+          ※本評価は一般的な目安であり、業種やビジネスモデルによって適正値は異なります。<br>実際の経営・投資判断は専門家にご相談ください。
+        </div>
+      </div>
 
     </div>
 
@@ -135,17 +141,34 @@
 
 /*
   日本語の金額を円に変換するシステム
-  例１億2345万円＝123450000JPY
+  例：1億2345万円 ＝ 123450000
 */
 
 function parseJapaneseMoney(text) {
 
+  // 全角英数字・全角記号を半角に変換
+  text = text.replace(/[Ａ-Ｚａ-ｚ０-９．，]/g, function(s) {
+    return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+  });
+
   text = text
     .replace(/,/g, "")
     .replace(/\s/g, "")
+    .replace(/ /g, "") // 全角スペースも除去
     .trim();
 
   if (text === "") {
+    return null;
+  }
+
+  // 1. 基本的な文字チェック（数値、小数点、兆・億・万・円のみ）
+  if (!/^[0-9.兆億円]+$/.test(text)) {
+    return null;
+  }
+
+  // 2. 厳格なフォーマットチェック（「兆→億→万→単位なし」の正しい順序と小数点の構成か）
+  const validPattern = /^(\d+(\.\d+)?兆)?(\d+(\.\d+)?億)?(\d+(\.\d+)?万)?(\d+(\.\d+)?)?円?$/;
+  if (!validPattern.test(text)) {
     return null;
   }
 
@@ -175,16 +198,24 @@ function parseJapaneseMoney(text) {
     total += Number(man[1]) * 10000;
   }
 
-  // 単位がない場合
-  if (!trillion && !oku && !man) {
-
-    const number = Number(text);
-
+  // 単位がない場合（末尾の数値部分）
+  const remainder = text.replace(/.*?万|.*?億|.*?兆/, "");
+  if (remainder !== "" && !trillion && !oku && !man) {
+    const number = Number(remainder);
     if (isNaN(number)) {
       return null;
     }
+    total = number;
+  } else if (remainder !== "") {
+    const number = Number(remainder);
+    if (!isNaN(number)) {
+      total += number;
+    }
+  }
 
-    return number;
+  // JSの安全な整数精度範囲（Number.MAX_SAFE_INTEGER ＝ 約9007兆円）を超えている場合の処理
+  if (total > Number.MAX_SAFE_INTEGER || isNaN(total)) {
+    return "OVERFLOW";
   }
 
   return total;
@@ -217,8 +248,14 @@ function calculate() {
   const result =
     document.getElementById("result");
 
-  const converted =
-    document.getElementById("converted");
+  const convertedRevenue =
+    document.getElementById("convertedRevenue");
+
+  const convertedProfit =
+    document.getElementById("convertedProfit");
+
+  const convertedNote =
+    document.getElementById("convertedNote");
 
   const evaluation =
     document.getElementById("evaluation");
@@ -231,9 +268,20 @@ function calculate() {
 
 
   error.textContent = "";
-  converted.textContent = "";
+  convertedRevenue.textContent = "";
+  convertedProfit.textContent = "";
+  convertedNote.style.display = "none";
 
 
+  // オーバーフロー（巨大すぎる数値）のチェック
+  if (revenue === "OVERFLOW" || profit === "OVERFLOW") {
+    result.textContent = "-- %";
+    evaluation.style.display = "none";
+    error.textContent = "入力された金額が大きすぎます。正しく表示・計算できる範囲内で入力してください。";
+    return;
+  }
+
+  // 入力エラーチェック
   if (revenue === null || profit === null) {
 
     result.textContent = "-- %";
@@ -341,15 +389,14 @@ function calculate() {
   }
 
 
-  // 円換算した金額
-  converted.innerHTML =
-    "営業収益： " +
-    revenue.toLocaleString() +
-    " 円<br>" +
-    "営業利益： " +
-    profit.toLocaleString() +
-    " 円<br>" + 
-    "<span  color: #666;'>※本評価は一般的な目安であり、業種やビジネスモデルによって適正値は異なります。<br>実際の経営判断は専門家にご相談ください。</span>";
+  // 円換算した金額を安全（textContent）に出力
+  convertedRevenue.textContent =
+    "営業収益： " + revenue.toLocaleString() + " 円";
+
+  convertedProfit.textContent =
+    "営業利益： " + profit.toLocaleString() + " 円";
+
+  convertedNote.style.display = "block";
 
 }
 
