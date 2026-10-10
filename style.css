@@ -322,12 +322,31 @@ body {
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.hamburger span {
+/* ラベル配置の基準点 */
+.hamburger {
+    position: fixed;
+}
+
+.hamburger span:not(.hamburger-label) {
     display: block;
     width: 22px;
     height: 2px;
     background: #333;
     border-radius: 1px;
+}
+
+.hamburger-label {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: #333;
+    line-height: 1;
+    background: none;
+    white-space: nowrap;
+    width: auto;
+    height: auto;
 }
 
 /* スマホ用目次パネル */
@@ -649,9 +668,4 @@ body {
         display: none;
     }
 
-}
-
-.bell-icon {
-    height: 1em; 
-    vertical-align: middle;
 }
